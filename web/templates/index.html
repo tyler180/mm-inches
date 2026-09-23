@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Convert metric and imperial lengths with decimal and fractional accuracy controls.">
+  <title>Benchmarks — Length Converter</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">SHOP REFERENCE / LENGTH</p>
+        <h1>Benchmarks</h1>
+      </div>
+      <p class="instruction">Enter a measurement in any row. Every other unit updates automatically.</p>
+    </header>
+
+    <section class="accuracy" aria-labelledby="accuracy-heading">
+      <h2 id="accuracy-heading">Accuracy</h2>
+      <label>
+        <span>Decimals</span>
+        <select id="decimal-places">
+          <option value="0">Whole numbers</option>
+          <option value="1">1 place</option>
+          <option value="2">2 places</option>
+          <option value="3">3 places</option>
+          <option value="4" selected>4 places</option>
+          <option value="5">5 places</option>
+          <option value="6">6 places</option>
+        </select>
+      </label>
+      <label>
+        <span>Fractions</span>
+        <select id="fraction-denominator">
+          <option value="2">Nearest 1/2</option>
+          <option value="4">Nearest 1/4</option>
+          <option value="8">Nearest 1/8</option>
+          <option value="16" selected>Nearest 1/16</option>
+          <option value="32">Nearest 1/32</option>
+          <option value="64">Nearest 1/64</option>
+        </select>
+      </label>
+      <details class="unit-picker">
+        <summary>Displayed units <strong id="selected-unit-count">3</strong></summary>
+        <fieldset>
+          <legend>Choose the rows to show</legend>
+          <label class="check-row"><input type="checkbox" data-unit-toggle="millimeters" checked><span>Millimeters</span><small>mm</small></label>
+          <label class="check-row"><input type="checkbox" data-unit-toggle="centimeters"><span>Centimeters</span><small>cm</small></label>
+          <label class="check-row"><input type="checkbox" data-unit-toggle="meters"><span>Meters</span><small>m</small></label>
+          <label class="check-row"><input type="checkbox" data-unit-toggle="fractional-inches" checked><span>Fractional inches</span><small>in</small></label>
+          <label class="check-row"><input type="checkbox" data-unit-toggle="decimal-inches" checked><span>Decimal inches</span><small>in</small></label>
+          <label class="check-row"><input type="checkbox" data-unit-toggle="feet"><span>Feet</span><small>ft</small></label>
+          <label class="check-row"><input type="checkbox" data-unit-toggle="yards"><span>Yards</span><small>yd</small></label>
+          <button type="button" id="restore-default-units">Use defaults</button>
+        </fieldset>
+      </details>
+    </section>
+
+    <section class="converter" aria-label="Length conversion values">
+      <div class="converter-heading" aria-hidden="true">
+        <span>Measurement</span>
+        <span>Value</span>
+      </div>
+      <div class="measurement active" data-unit="millimeters">
+        <label for="millimeters"><span>Millimeters</span><small>mm</small></label>
+        <div class="input-wrap"><input id="millimeters" inputmode="decimal" value="426" autocomplete="off" aria-describedby="status"><span class="unit-mark">mm</span></div>
+      </div>
+      <div class="measurement" data-unit="centimeters" hidden>
+        <label for="centimeters"><span>Centimeters</span><small>cm</small></label>
+        <div class="input-wrap"><input id="centimeters" inputmode="decimal" autocomplete="off" aria-describedby="status"><span class="unit-mark">cm</span></div>
+      </div>
+      <div class="measurement" data-unit="meters" hidden>
+        <label for="meters"><span>Meters</span><small>m</small></label>
+        <div class="input-wrap"><input id="meters" inputmode="decimal" autocomplete="off" aria-describedby="status"><span class="unit-mark">m</span></div>
+      </div>
+      <div class="measurement emphasized" data-unit="fractional-inches">
+        <label for="fractional-inches"><span>Fractional inches</span><small>in</small></label>
+        <div class="input-wrap"><input id="fractional-inches" inputmode="text" autocomplete="off" aria-describedby="fraction-help status"><span class="unit-mark">in</span></div>
+        <p id="fraction-help" class="row-help">Accepts 16 3/4, 16-3/4, or 3/4</p>
+      </div>
+      <div class="measurement" data-unit="decimal-inches">
+        <label for="decimal-inches"><span>Decimal inches</span><small>in</small></label>
+        <div class="input-wrap"><input id="decimal-inches" inputmode="decimal" autocomplete="off" aria-describedby="status"><span class="unit-mark">in</span></div>
+      </div>
+      <div class="measurement" data-unit="feet" hidden>
+        <label for="feet"><span>Feet</span><small>ft</small></label>
+        <div class="input-wrap"><input id="feet" inputmode="decimal" autocomplete="off" aria-describedby="status"><span class="unit-mark">ft</span></div>
+      </div>
+      <div class="measurement" data-unit="yards" hidden>
+        <label for="yards"><span>Yards</span><small>yd</small></label>
+        <div class="input-wrap"><input id="yards" inputmode="decimal" autocomplete="off" aria-describedby="status"><span class="unit-mark">yd</span></div>
+      </div>
+    </section>
+    <p id="status" class="status" role="status" aria-live="polite">Ready</p>
+  </main>
+</body>
+</html>
