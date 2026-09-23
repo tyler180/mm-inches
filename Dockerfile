@@ -9,5 +9,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/mm-inch
 FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /out/mm-inches /mm-inches
 EXPOSE 8080
-USER nonroot:nonroot
+USER 65532:65532
 ENTRYPOINT ["/mm-inches"]
