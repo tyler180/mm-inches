@@ -30,11 +30,21 @@ The final image is distroless, runs as a non-root user, and writes no applicatio
 Pull requests run formatting, race-enabled tests, `go vet`, a binary build,
 Kustomize rendering, and a hardened container smoke test.
 
-After a change is merged to `main`, the release workflow publishes
-`tyler180/mm-inches:sha-<commit>` for `linux/amd64` with provenance and an SBOM.
-It then opens a pull request in `tyler180/talos-gitops` that pins the deployment
-to the published image digest. Merge and sync that GitOps pull request when the
-release is ready for the cluster.
+After changes are merged to `main`, create and push a semantic version tag:
+
+```sh
+git switch main
+git pull --ff-only
+git tag -a v0.1.0 -m "Release v0.1.0"
+git push origin v0.1.0
+```
+
+The release workflow publishes `tyler180/mm-inches:v0.1.0` for `linux/amd64`
+with provenance and an SBOM. It then opens a pull request in
+`tyler180/talos-gitops` using an image reference such as
+`tyler180/mm-inches:v0.1.0@sha256:...`. This keeps the version readable while
+pinning the exact image content. Merge and sync that GitOps pull request when
+the release is ready for the cluster.
 
 Configure these Actions secrets in this repository before merging the CI/CD
 setup:
