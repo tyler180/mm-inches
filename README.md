@@ -19,11 +19,29 @@ go test ./...
 ## Build the container
 
 ```sh
-docker build -t ghcr.io/YOUR_GITHUB_USER/mm-inches:latest .
-docker push ghcr.io/YOUR_GITHUB_USER/mm-inches:latest
+docker build -t tyler180/mm-inches:local .
+./scripts/smoke-test.sh tyler180/mm-inches:local
 ```
 
 The final image is distroless, runs as a non-root user, and writes no application data to disk.
+
+## CI/CD
+
+Pull requests run formatting, race-enabled tests, `go vet`, a binary build,
+Kustomize rendering, and a hardened container smoke test.
+
+After a change is merged to `main`, the release workflow publishes
+`tyler180/mm-inches:sha-<commit>` for `linux/amd64` with provenance and an SBOM.
+It then opens a pull request in `tyler180/talos-gitops` that pins the deployment
+to the published image digest. Merge and sync that GitOps pull request when the
+release is ready for the cluster.
+
+Configure these Actions secrets in this repository before merging the CI/CD
+setup:
+
+- `DOCKERHUB_TOKEN`: a Docker Hub access token that can push `tyler180/mm-inches`.
+- `GITOPS_TOKEN`: a fine-grained GitHub token with Contents read/write and Pull
+  requests read/write access to `tyler180/talos-gitops`.
 
 ## Deploy to Kubernetes
 

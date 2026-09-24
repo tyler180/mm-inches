@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)"
+
+      - name: Test
+        run: go test -race ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Build binary
+        run: go build -trimpath -o /tmp/mm-inches .
+
+      - name: Install kubectl
+        env:
+          KUBECTL_VERSION: v1.35.0
+          KUBECTL_SHA256: a2e984a18a0c063279d692533031c1eff93a262afcc0afdc517375432d060989
+        run: |
+          curl --fail --silent --show-error --location \
+            --output /tmp/kubectl \
+            "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+          echo "${KUBECTL_SHA256}  /tmp/kubectl" | sha256sum --check --strict
+          mkdir -p "$RUNNER_TEMP/kubectl-bin"
+          install -m 0755 /tmp/kubectl "$RUNNER_TEMP/kubectl-bin/kubectl"
+          echo "$RUNNER_TEMP/kubectl-bin" >>"$GITHUB_PATH"
+
+      - name: Render Kubernetes manifests
+        run: kubectl kustomize deploy >/tmp/mm-inches-rendered.yaml
+
+      - name: Build container
+        run: docker build --platform linux/amd64 --tag mm-inches:ci .
+
+      - name: Test hardened container
+        run: ./scripts/smoke-test.sh mm-inches:ci
